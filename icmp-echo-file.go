@@ -97,6 +97,7 @@ func main() {
 
     seq := 0
     buf := make([]byte, *psize)
+    limiter := time.Tick(time.Millisecond * time.Duration(*interval))
     for {
         n, err := reader.Read(buf)
         if err != nil && err != io.EOF { panic(err) }
@@ -104,6 +105,6 @@ func main() {
 
         sendPacket(conn, raddr, buf, seq)
         seq++
-        time.Sleep(time.Millisecond * time.Duration(*interval))
+        <-limiter
     }
 }
